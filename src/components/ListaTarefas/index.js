@@ -10,10 +10,12 @@ import {
   LinhaHorizontal
 } from "./styled";
 import bin from "../../assets/bin.png";
+import { ListaCompletos } from "./listaCompleta";
 
 export function ListaTarefas() {
   const [lista, setLista] = useState(["Fazer exercícios", "Estudar React"]);
   const [novaTarefa, setNovaTarefa] = useState("");
+  const [listaResolvida, setListaResolvida] = useState([]);
 
   const onChangeTarefa = (event) => {
     setNovaTarefa(event.target.value);
@@ -27,8 +29,18 @@ export function ListaTarefas() {
 
   const removeTarefa = (tarefa) => {
     const listaFiltrada = lista.filter((item) => item !== tarefa);
+    const novaListaResolvida = [...listaResolvida, tarefa]
+    setListaResolvida(novaListaResolvida);
     setLista(listaFiltrada);
   };
+
+  const apertaEnter = (event) => {
+    if (event.key === "Enter") {
+      const novaLista = [...lista, novaTarefa]
+      setLista(novaLista);
+      setNovaTarefa("");
+    }
+  }
 
   return (
     <ListaTarefasContainer>
@@ -37,6 +49,7 @@ export function ListaTarefas() {
           placeholder="Digite aqui uma tarefa"
           value={novaTarefa}
           onChange={onChangeTarefa}
+          onKeyPress={apertaEnter}
         />
         <AddTaskButton onClick={adicionaTarefa}>Adicionar</AddTaskButton>
       </InputContainer>
@@ -54,6 +67,11 @@ export function ListaTarefas() {
           })}
         </ul>
       </ListaContainer>
+      <ul>
+        {listaResolvida.map((tarefa, index) => {
+          return <ListaCompletos tarefa={tarefa} key={index} />
+        })}
+      </ul>
       <LinhaHorizontal/>
     </ListaTarefasContainer>
   );
